@@ -39,6 +39,19 @@ services:
 ## uncommnet to enable auto-login
 #      - ADMINER_AUTOLOGIN=1
 
+  sd:
+    image: spring-msa/eureka
+    container_name: sd
+    build:
+      context: ./discovery
+      dockerfile: Dockerfile
+    environment:
+      - CONTAINER_NAME=sd
+      - PORT=8761
+      - ZONE=http://sd:8761/eureka/
+    ports:
+      - "8761:8761"
+
   account:
     image: spring-msa/account-api
     container_name: account
