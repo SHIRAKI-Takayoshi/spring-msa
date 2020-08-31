@@ -1,0 +1,29 @@
+server:
+  port: ${PORT:8761}
+
+eureka:
+  shouldUseDns: false
+  instance:
+    hostname: ${CONTAINER_NAME:localhost}
+    preferIpAddress: false
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: ${ZONE:http://localhost:8761/eureka}
+  server:
+    enableSelfPreservation: true
+spring:
+  main:
+    banner-mode: "off"
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
