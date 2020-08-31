@@ -68,6 +68,7 @@ services:
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWD=${DB_PASSWORD:-postgres}
       - DB_URL=${DB_URL:-r2dbc:postgresql://db:5432/db}
+      - DISCOVERY=http://sd:8761/eureka/
     networks:
       - default
 
