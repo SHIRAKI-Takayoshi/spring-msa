@@ -47,10 +47,20 @@ services:
       dockerfile: Dockerfile
     environment:
       - CONTAINER_NAME=sd
-      - PORT=8761
-      - ZONE=http://sd:8761/eureka/
+      - PORT=3001
+      - ZONE=http://sd2:3002/eureka/
     ports:
-      - "8761:8761"
+      - "3001:3001"
+
+  sd2:
+    image: spring-msa/eureka
+    container_name: sd2
+    environment:
+      - CONTAINER_NAME=sd2
+      - PORT=3002
+      - ZONE=http://sd:3001/eureka/
+    ports:
+      - "3002:3002"
 
   account:
     image: spring-msa/account-api
@@ -68,7 +78,41 @@ services:
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWD=${DB_PASSWORD:-postgres}
       - DB_URL=${DB_URL:-r2dbc:postgresql://db:5432/db}
-      - DISCOVERY=http://sd:8761/eureka/
+      - DISCOVERY=http://sd:3001/eureka/,http://sd2:3002/eureka/
+    networks:
+      - default
+
+  account2:
+    image: spring-msa/account-api
+    container_name: account2
+    ports:
+      - "9002:9002"
+    depends_on:
+      - db
+    environment:
+      - CONTAINER_NAME=account2
+      - PORT=9002
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWD=${DB_PASSWORD:-postgres}
+      - DB_URL=${DB_URL:-r2dbc:postgresql://db:5432/db}
+      - DISCOVERY=http://sd:3001/eureka/,http://sd2:3002/eureka/
+    networks:
+      - default
+
+  account3:
+    image: spring-msa/account-api
+    container_name: account3
+    ports:
+      - "9003:9003"
+    depends_on:
+      - db
+    environment:
+      - CONTAINER_NAME=account3
+      - PORT=9003
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWD=${DB_PASSWORD:-postgres}
+      - DB_URL=${DB_URL:-r2dbc:postgresql://db:5432/db}
+      - DISCOVERY=http://sd:3001/eureka/,http://sd2:3002/eureka/
     networks:
       - default
 
