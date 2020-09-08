@@ -1,0 +1,36 @@
+server:
+  port: ${PORT:5000}
+
+spring:
+  main:
+    banner-mode: "off"
+  application:
+    name: gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: account
+          uri: lb://ACCOUNT-API
+          predicates:
+            - Path=/api/**
+          filters:
+          - RewritePath=/api(?<segment>/?.*), $\{segment}
+    loadbalancer:
+      ribbon:
+        enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+eureka:
+  instance:
+    prefer-ip-address: false
+  client:
+    registerWithEureka: false
+    serviceUrl:
+      defaultZone: ${DISCOVERY:http://localhost:3001/eureka}
+
