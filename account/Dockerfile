@@ -1,5 +1,5 @@
 FROM openjdk:11-jdk-slim
-ADD target/account-*.jar account.jar
+ADD target/account-*.jar /account.jar
 ENV CONTAINER_NAME=account \
     PORT=9001 \
     DB_NAME=db \
