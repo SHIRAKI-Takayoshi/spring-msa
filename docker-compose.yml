@@ -39,6 +39,18 @@ services:
 ## uncommnet to enable auto-login
 #      - ADMINER_AUTOLOGIN=1
 
+  gw:
+    image: spring-msa/gateway
+    container_name: gw
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    environment:
+      - CONTAINER_NAME=gw
+      - PORT=5000
+      - DISCOVERY=http://sd:3001/eureka/,http://sd2:3002/eureka/
+    ports:
+      - "5000:5000"
   sd:
     image: spring-msa/eureka
     container_name: sd
