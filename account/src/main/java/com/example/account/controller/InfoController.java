@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 @RestController
 @RequestMapping("")
@@ -19,20 +19,20 @@ public class InfoController {
     Environment environment;
 
     @GetMapping
-    public Mono<Map<String, String>> index() throws UnknownHostException {
+    public Mono<LinkedHashMap<String, String>> index() throws UnknownHostException {
         return info();
     }
 
     @GetMapping("/info")
-    public Mono<Map<String, String>> info() throws UnknownHostException {
+    public Mono<LinkedHashMap<String, String>> info() throws UnknownHostException {
 
         InetAddress localhost = InetAddress.getLocalHost();
 
-        Map<String, String> response = Map.of(
-                "port", environment.getProperty("server.port"),
-                "hostAddress", localhost.getHostAddress(),
-                "hostName", localhost.getHostName(),
-                "containerName", environment.getProperty("app.container-name"));
+        LinkedHashMap<String, String> response = new LinkedHashMap<>();
+        response.put("containerName", environment.getProperty("app.container-name"));
+        response.put("port", environment.getProperty("server.port"));
+        response.put("hostAddress", localhost.getHostAddress());
+        response.put("hostName", localhost.getHostName());
 
         return Mono.just(response);
     }
