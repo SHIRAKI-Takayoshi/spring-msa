@@ -12,6 +12,7 @@
 	<modules>
 		<module>discovery</module>
 		<module>account</module>
+		<module>gateway</module>
 	</modules>
 
 </project>
