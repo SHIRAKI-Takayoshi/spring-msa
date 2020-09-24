@@ -34,3 +34,9 @@ eureka:
     serviceUrl:
       defaultZone: ${DISCOVERY:http://localhost:8761/eureka}
 
+opentracing:
+  jaeger:
+    log-spans: false
+    http-sender:
+       url: ${JAEGER_HTTP_URL:http://localhost:14268/api/traces}
+

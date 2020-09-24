@@ -37,3 +37,9 @@ eureka:
     hostname: ${CONTAINER_NAME:localhost}
     preferIpAddress: false
 
+opentracing:
+  jaeger:
+    log-spans: false
+    http-sender:
+       url: ${JAEGER_HTTP_URL:http://localhost:14268/api/traces}
+
