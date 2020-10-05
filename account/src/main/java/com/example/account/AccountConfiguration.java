@@ -3,6 +3,7 @@ package com.example.account;
 import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
 import io.r2dbc.proxy.ProxyConnectionFactory;
+import io.r2dbc.proxy.listener.LifeCycleListener;
 import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.boot.autoconfigure.r2dbc.ConnectionFactoryBuilder;
 import org.springframework.boot.autoconfigure.r2dbc.EmbeddedDatabaseConnection;
@@ -16,13 +17,21 @@ import org.springframework.util.StringUtils;
 public class AccountConfiguration {
 
     @Bean
-    ConnectionFactory connectionFactory(R2dbcProperties properties, ResourceLoader resourceLoader) {
+    public LifeCycleListener tracingExecutionListener() {
+        return new TracingExecutionListener();
+    }
+
+    // https://github.com/spring-projects/spring-boot/pull/21689
+    // 上記のPull Request が取り込まれたら、以下のコードは不要となる
+    @Bean
+    public ConnectionFactory connectionFactory(R2dbcProperties properties,
+                                               ResourceLoader resourceLoader,
+                                               LifeCycleListener tracingExecutionListener) {
+
         ConnectionFactory original = ConnectionFactoryBuilder
                 .of(properties, () -> EmbeddedDatabaseConnection.get(resourceLoader.getClassLoader())).build();
-        ConnectionFactory proxyConnectionFactory
-                = ProxyConnectionFactory.builder(original).listener(new TracingExecutionListener()).build();
-
-//        return proxyConnectionFactory;
+        ConnectionFactory proxyConnectionFactory =
+                ProxyConnectionFactory.builder(original).listener(tracingExecutionListener).build();
 
         R2dbcProperties.Pool pool = properties.getPool();
         ConnectionPoolConfiguration.Builder builder
@@ -32,6 +41,5 @@ public class AccountConfiguration {
             builder.validationQuery(pool.getValidationQuery());
         }
         return new ConnectionPool(builder.build());
-
     }
 }
