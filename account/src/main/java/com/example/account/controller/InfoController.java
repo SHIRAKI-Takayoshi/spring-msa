@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedHashMap;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("")
@@ -33,6 +34,7 @@ public class InfoController {
         response.put("port", environment.getProperty("server.port"));
         response.put("hostAddress", localhost.getHostAddress());
         response.put("hostName", localhost.getHostName());
+        response.put("date", LocalDateTime.now().toString());
 
         return Mono.just(response);
     }
